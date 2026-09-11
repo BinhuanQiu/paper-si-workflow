@@ -1,109 +1,173 @@
 # Paper + SI Workflow
 
-一个面向科研文献批量交付的开放方法论 Skill：公开渠道先取，科研通互助补缺，正文与 Supporting Information 分开验收。
+**把文献清单交给 AI，让正文、补充材料和归档成为一套工作流。**
 
-**少做重复操作，明确报告缺项，不把“程序执行成功”当成“文献已收齐”。**
+公开资源优先 · 科研通互助补缺 · 正文与 SI 协同处理 · 按主题交付
 
-## 项目是什么
+[快速开始](#快速开始) · [使用演示](DEMO.md) · [下载 Skill](https://github.com/BinhuanQiu/paper-si-workflow/releases/latest) · [反馈与交流](https://github.com/BinhuanQiu/paper-si-workflow/issues)
 
-输入确定的 DOI / 文献清单，以及用户指定的输出目录；由具备文件、网页和必要浏览器操作能力的 AI 助手，按本 Skill 管理获取、等待、收件、验收和归档。
+`paper-si-workflow` 是面向科研文献批量获取的 AI Skill。它指导助手把 **Excel / DOI 清单、本地论文、公开下载渠道和科研通互助** 组织起来，从查缺、求助到收件、核对和分类归档，减少在网页与文件夹之间反复切换的工作。
 
-这是初始方法论版本，提供可安装的 `SKILL.md`、操作参考、任务模板、记录示例和既有实测摘要。**不包含独立下载引擎、科研通 API 客户端、后台调度器或已经通过端到端验证的浏览器自动化实现。** 安装 Skill 不会自动获得浏览器控制、数据库订阅或科研通账号。
+**你决定下载什么、放在哪里、花多少积分；AI 按工作流推进，并记录每篇文献的进度。**
 
-## 为什么做
+## 不只下载 PDF，还把后续工作接起来
 
-单个下载工具往往只能解决某些出版社或某些文件类型。真实任务还需要避免重复求助、控制积分、区分正文与 SI、等待应助、保护旧文件，并告诉使用者哪些材料仍然缺失。
+做综述、整理课题资料或准备组会时，麻烦的常常不是下载某一篇论文，而是：
 
-本项目将这些环节组织为统一流程，不替代科研通本身，也不是科研通官方项目，与平台没有隶属关系。
+- 正文拿到了，SI 还散落在不同页面。
+- 有些文件早已下载，却又重复查找、重复求助。
+- 求助发布了，需要记住哪些已到、哪些还在等待。
+- 下载文件名杂乱，难以与自己的主题和任务表对应。
+- 换一天继续时，又要重新梳理整批进度。
 
-## 工作流
+本项目把这些步骤串起来：**已有的先复用，缺失的分渠道补齐，等待期间继续处理其他条目，最后按你的目录交付。**
+
+## 这套 Skill 帮你做什么
+
+| 你要完成的工作 | Skill 指导助手如何处理 |
+|---|---|
+| 一次处理一份文献清单 | 以 DOI / Excel 总表建立任务，正文和 SI 分别跟踪 |
+| 少做重复下载 | 核对本地文件与已有求助，只处理缺项 |
+| 组合多个获取渠道 | 优先公开资源，再通过科研通等用户指定渠道补缺 |
+| 正文与 SI 一起推进 | 正文批量求助，在等待期间逐篇处理 SI |
+| 控制积分支出 | 先估算预算，记录已花费和待确认支出 |
+| 中断后接着做 | 保留请求 ID、文件位置和任务状态，按记录续接 |
+| 按研究主题整理文件 | 使用你的分类与短标题，保留 SI 原始格式 |
+| 知道到底拿到了什么 | 核对身份、记录附件数量，并列出待应助和缺项 |
+
+## 快速开始
+
+### 1. 安装 Skill
+
+从 [Releases](https://github.com/BinhuanQiu/paper-si-workflow/releases/latest) 下载 ZIP，将其中的 `skills/paper-si-workflow` 完整文件夹放入客户端的技能目录。
+
+例如，使用 Codex 时，安装后的结构为：
 
 ```text
-确定清单、正文/SI 范围、目录及预算
-                  |
-            本地身份核对与去重
-                  |
-     公开资源 / 已获授权的资源先获取
-                  |
-       缺失正文批量求助 + SI 独立补缺
-                  |
-           保存记录，等待并集中收件
-                  |
-       文件身份核对 + 已知附件清单核对
-                  |
-          按用户目录归档并报告缺项
+~/.codex/skills/paper-si-workflow/
+|-- SKILL.md
+|-- agents/
+|-- references/
+`-- assets/
 ```
 
-可直接下载的 SI 与正文求助等待交错进行；不因一篇待应助阻塞其他条目。若用户指定只用某一渠道，应遵循用户范围，而不是强制遍历全部渠道。
+其他支持 `SKILL.md` 的客户端按自己的技能目录安装。文件解析、联网下载和浏览器操作由客户端提供；使用科研通时，准备好自己的账号和可操作的登录页面即可。不同客户端的具体操作能力取决于其工具配置。
 
-## 核心约束
-
-- DOI 与请求类型联合去重，正文求助不等于 SI 求助。
-- 旧论文默认只读，复用时复制，不移动、不覆盖。
-- 积分和批量限制以执行时平台页面为准，不硬编码历史价格。
-- 发布结果不明时先核对既有求助，不直接再次提交。
-- 文件实际保存并核对通过后，才记录为已下载。
-- 下载完整度必须说明依据；“找到的都下载了”不等于“全部附件”。
-- “未找到 SI”“确认无 SI”“用户接受缺项”是三种不同结果。
-- 不导出登录状态，不把密码、Cookie、下载令牌或论文文件放入开源仓库。
-
-## 安装与调用
-
-将仓库中的 `skills/paper-si-workflow` 整个文件夹安装到你的技能目录。例如 Codex 的 `~/.codex/skills/paper-si-workflow`。其他支持 `SKILL.md` 的客户端按各自技能目录安装。
-
-不需要为本方法论安装 Python 依赖；文件解析、下载与浏览器控制由宿主环境及可选工具提供。
-
-调用示例：
+### 2. 把清单和要求交给 AI
 
 ```text
 使用 $paper-si-workflow 处理这份文献清单，正文和全部 SI 都需要。
-保留现有论文不动，优先复用；缺项允许通过我的科研通账号求助。
-输出按清单中的分类和文件名，积分总预算为我确认的额度。
-发布前先告诉我本批次的预计积分；遇到验证码由我接手。
+
+按表格中的主题目录和短标题归档，保留我以前的论文不动。
+先复用已有文件，再找公开资源；剩余缺项通过科研通求助。
+积分预算上限为 200 分，不加价、不置顶。
+正文等待期间继续处理 SI，最后告诉我哪些已完成、哪些还缺。
 ```
 
-续接示例：
+200 分是示例预算，可按任务调整；实际价格以平台当时页面为准。
+
+### 3. 按任务进度收件与交付
+
+助手依照 Skill 处理任务并保存进度。需要登录、验证码或关键决定时由你接手，其余步骤继续使用已有记录推进。
+
+想先看具体过程？阅读 [完整使用演示](DEMO.md)，从安装一直看到中断续接和交付摘要。
+
+## 常用场景，直接这样说
+
+| 场景 | 提问示例 |
+|---|---|
+| 批量获取正文与 SI | “处理这份 DOI 清单，正文和全部补充材料都需要。” |
+| 只补 SI | “正文已经有了，只帮我补 SI，别重复下载正文。” |
+| 继续收取应助文件 | “从上次记录继续，只收件，不发布新求助、不增加积分支出。” |
+| 整理已有论文 | “不联网、不求助，把这些文件核对后按主题分类，原文件保留。” |
+| 准备云端阅读资料 | “从已确认的正文中复制一份仅正文分类包，不要 SI，不改原目录。” |
+
+## 从清单到交付
 
 ```text
-使用 $paper-si-workflow 从已有任务记录继续，只收取已应助文件，
-不要重新发布，不增加积分支出；报告仍待应助和缺失的 SI。
+文献清单 + 输出目录 + 预算
+            |
+     本地文件与已有求助去重
+            |
+       公开资源优先获取
+            |
+    缺失正文批量求助 + SI 独立补缺
+            |
+      等待期间交错处理其他条目
+            |
+      集中收件、核对身份与附件
+            |
+       分类文件 + 进度记录 + 缺项清单
 ```
 
-只整理文件也可明确要求“不联网、不发布求助”。
+**下载器解决“从哪里拿文件”，这套 Skill 连接“拿文件之前和之后”的整项任务。** 可以搭配已有下载工具，也可以遵循你指定的渠道，不要求从头换掉现有工作方式。
 
-## 文件导航
+## 交付是什么样的？
 
-- [Skill 入口](skills/paper-si-workflow/SKILL.md)：任务流程与能力边界。
-- [科研通工作规范](skills/paper-si-workflow/references/ablesci.md)：预算、发布、等待和收件。
-- [记录与验收约定](skills/paper-si-workflow/references/manifest.md)：状态、文件证据和完成判定。
-- [任务模板](skills/paper-si-workflow/assets/tasks.example.csv)：仅含虚构示例，不是真实下载任务。
-- [记录示例](skills/paper-si-workflow/assets/manifest.example.json)：只展示结构，不是运行配置或可执行程序。
-- [实测背景](docs/benchmark.md)：35 篇文献的既有对照结果与局限。
-- [贡献指南](CONTRIBUTING.md)：可复现问题与隐私要求。
+按主题分类的示意结构如下，具体名称以你的任务表为准：
 
-## 实测带来的启发
+```text
+文献资料/
+|-- 主题一/
+|   |-- 载流子动力学.pdf
+|   |-- 载流子动力学_si.pdf
+|   |-- 界面复合.pdf
+|   |-- 界面复合_si_01.pdf
+|   `-- 界面复合_si_02.xlsx
+|-- 主题二/
+|   |-- 光增益机制.pdf
+|   `-- 光增益机制_si.mp4
+`-- 任务记录/
+```
 
-在一次既有的本地测试中，两个开源项目合计匹配了参照集中 41 个已知 SI 文件中的 22 个，覆盖 31 篇有已知 SI 的论文中 17 篇的全部已知 SI。这说明公开获取工具值得作为第一轮，但不足以据此承诺完整交付。
+正文、SI、待应助和缺项分别记录。多份附件保留顺序与原始格式，旧文件默认保留。**目标是让你接手就能阅读、检索和继续处理，而不是面对一堆来历不明的下载文件。**
 
-这不是本 Skill 的端到端成功率，不是科研通成功率，也不是开源项目充分配置后的能力上限。详见 [测试范围与局限](docs/benchmark.md)。
+## 来自实际任务的经验
 
-## 合规与隐私
+项目源于一次 **35 篇文献的正文与 SI 整理任务**。我们还使用已持有的正文和 41 个已知 SI 文件，对两种开源获取工具进行了本地对照测试。
 
-仅处理用户明确指定、允许获取和使用的资料。优先使用开放许可资源及用户合法授权渠道，遵守出版社、机构和互助平台的访问与分享规则。具备机构阅读权限不自动意味着可以再分发。科研通适配必须遵循其实际规则；不要把未公开的内部接口当成获准调用的 API。
+得到的启发很直接：单个渠道各有所长，而任务组织、缺项补充、等待收件和文件验收同样值得复用。这也是我们将经验整理成 Skill 的原因。
 
-遇到登录、验证码或安全挑战，保留现场并让用户处理，不绕过访问控制。没有持续调度能力时，不承诺关闭任务后仍会自动等候或收件。
+[查看测试条件、结果与局限](docs/benchmark.md)。该记录是既有案例，不是本 Skill 的端到端成功率。
 
-仓库不提供论文资源，不承诺百分之百下载，也没有证明比任何商业服务普遍更便宜。MIT 许可证只覆盖本项目原创材料，不覆盖文献、第三方项目或平台服务。
+## 项目文件
 
-## 致谢与参考
+| 文件 | 内容 |
+|---|---|
+| [SKILL.md](skills/paper-si-workflow/SKILL.md) | AI 助手执行工作流的入口 |
+| [DEMO.md](DEMO.md) | 首次使用与混合任务处理演示 |
+| [科研通流程](skills/paper-si-workflow/references/ablesci.md) | 预算、发布、等待与收件 |
+| [记录与验收](skills/paper-si-workflow/references/manifest.md) | 正文 / SI 状态和完整度证据 |
+| [任务模板](skills/paper-si-workflow/assets/tasks.example.csv) | 可替换为你自己文献的 CSV 示例 |
+| [记录示例](skills/paper-si-workflow/assets/manifest.example.json) | 可续接任务的数据结构示例 |
+| [贡献指南](CONTRIBUTING.md) | 使用反馈和协作方式 |
 
-- [科研通官方互助指南](https://www.ablesci.com/post/detail?id=lQR9by)
-- [科研通帮助中心](https://www.ablesci.com/knowledge/index)
-- [SI-Merge](https://github.com/HengyuLi-Ozaki-lab/SI-Merge)
-- [manuscript-harvest](https://github.com/Lattice-Data/manuscript-harvest)
+## 一起把它做得更好
 
-本仓库不捆绑上述项目代码。集成时需分别遵守其许可证和服务条款。
+欢迎带着真实使用中的问题来提 [Issue](https://github.com/BinhuanQiu/paper-si-workflow/issues)：哪个出版社的 SI 难找、哪一步操作重复、怎样的分类更顺手，都可以成为下一次改进的起点。
 
-## English summary
+如果这套流程对你有帮助，欢迎 Star，或分享给正在整理文献的同学和研究伙伴。
 
-An open methodology skill for delivering batches of academic papers and supporting information. Reuse verified local files, retrieve openly available or legitimately authorized materials, use AbleSci mutual aid for approved gaps, and track identity, completeness, cost and provenance separately. This initial release contains instructions and templates, not a standalone downloader or a guarantee of access. It is independent of AbleSci and does not redistribute papers or credentials.
+维护者：[Binhuan Qiu](https://github.com/BinhuanQiu)。本项目使用 [MIT 许可证](LICENSE)。
+
+## 使用说明
+
+当前版本提供 Skill 指令、参考规范和模板，由 AI 客户端调用实际工具执行，不附带独立下载引擎或后台服务。持续监控需要另外可用的调度工具；新 Skill 尚未进行端到端测试，演示情境为虚构示例。
+
+请使用公开资源及自己合法获准的访问渠道，并遵守平台规则。获取结果取决于资源、权限和应助情况，未解决项会保留在任务记录中。本项目与科研通无隶属关系，不提供或再分发论文文件，也不收集账号凭据。
+
+## 相关项目
+
+- [科研通](https://www.ablesci.com/)：文献互助平台。
+- [SI-Merge](https://github.com/HengyuLi-Ozaki-lab/SI-Merge)：SI 获取与合并阅读工具。
+- [manuscript-harvest](https://github.com/Lattice-Data/manuscript-harvest)：正文和附件获取工具。
+
+本仓库不捆绑这些项目的代码；可以按需选择并遵守各自的使用条件。
+
+## English
+
+**Turn a paper list into an organized collection of full texts and supporting information.**
+
+Paper + SI Workflow is an AI skill for coordinating local-file reuse, open-resource retrieval, user-authorized AbleSci mutual aid, budget tracking, resumable collection and topic-based filing. Give your agent a DOI list or spreadsheet, an output folder and a budget; the skill guides how it handles the batch and records remaining gaps.
+
+Start with the [walkthrough](DEMO.md) or [download the skill](https://github.com/BinhuanQiu/paper-si-workflow/releases/latest). This release provides instructions and templates for a tool-enabled AI client. MIT licensed, community contributions welcome.
