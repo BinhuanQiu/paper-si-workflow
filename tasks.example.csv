@@ -1,0 +1,2 @@
+task_id,doi,title,category,short_name,main_requested,si_requested,main_filename,si_filename_pattern
+demo-001,,Fictional example - do not submit,example-topic,example-paper,true,true,example-paper.pdf,example-paper_si_{index}.{ext}

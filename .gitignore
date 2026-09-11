@@ -1,0 +1,31 @@
+# Runtime artifacts and private datasets do not belong in this repository.
+/runs/
+/downloads/
+/corpus/
+/private/
+/benchmark-data/
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.zip
+*.7z
+*.mp4
+*.mov
+*.log
+.env
+.env.*
+credentials*.json
+*storage_state*.json
+cookies*.json
+cookies*.txt
+*token*.json
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Ignore rules are not a substitute for reviewing files before publication.

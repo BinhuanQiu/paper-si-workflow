@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper + SI Workflow"
+  short_description: "Batch paper and SI retrieval with tracked mutual-aid gaps"
+  default_prompt: "Use $paper-si-workflow to organize my paper list, retrieve requested full texts and SI through authorized channels, and report verified files and remaining gaps."

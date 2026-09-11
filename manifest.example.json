@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1-example",
+  "example_only": true,
+  "batch": {
+    "output_root": "./runs/example",
+    "authorized_channels": [],
+    "budget_points": null,
+    "spent_points": 0,
+    "reserved_points": 0,
+    "persistent_monitoring_authorized": false
+  },
+  "tasks": [
+    {
+      "task_id": "demo-001",
+      "doi": null,
+      "title": "Fictional example - do not submit",
+      "category": "example-topic",
+      "short_name": "example-paper",
+      "requested": { "main": true, "si": true, "main_version": "version_of_record" },
+      "main": { "status": "pending", "files": [] },
+      "si": {
+        "status": "pending",
+        "expected_count": null,
+        "expected_attachments": [],
+        "enumeration_source": null,
+        "enumeration_checked_at": null,
+        "files": [],
+        "missing_attachments": []
+      },
+      "requests": [],
+      "disposition": "open",
+      "notes": ["No action or spending is authorized by this example."]
+    }
+  ]
+}
